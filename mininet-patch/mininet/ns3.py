@@ -640,7 +640,7 @@ class WIFISegment( object ):
         # Helpers instantiation.
         self.channelhelper = ns.wifi.YansWifiChannelHelper.Default()
         self.phyhelper = ns.wifi.YansWifiPhyHelper.Default()
-        self.wifihelper = ns.wifi.WifiHelper.Default()
+        self.wifihelper = ns.wifi.WifiHelper()
         self.machelper = ns.wifi.NqosWifiMacHelper.Default()
         # Setting channel to phyhelper.
         self.channel = self.channelhelper.Create()
