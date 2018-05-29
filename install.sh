@@ -30,7 +30,7 @@ CODENAME=Unknown
 function enviroment {
 
     echo "Prepare Enviroment"
-    $install gcc g++ python python-dev git vim make cmake gcc-4.8-multilib g++-4.8-multilib \
+    apt-get install gcc g++ sudo python python-dev git vim make cmake gcc-4.8-multilib g++-4.8-multilib \
     python-setuptools unzip curl build-essential debhelper autoconf automake \
     patch dpkg-dev libssl-dev libncurses5-dev libpcre3-dev graphviz python-all \
     python-qt4 python-zopeinterface python-twisted-conch uuid-runtime \
@@ -113,7 +113,7 @@ function mininet-normal {
     echo "Base on Mininet $MININET_VERSION"
     cd $ROOT_PATH
     if [ ! -d mininet ]; then
-        git clone git://github.com/mininet/mininet.git
+		git clone git://github.com/mininet/mininet.git
 		cd mininet
         git tag
 		git checkout $MININET_VERSION
@@ -132,15 +132,16 @@ function openvswitch {
     DEB_BUILD_OPTIONS='parallel=2 nocheck' fakeroot debian/rules binary
     dpkg -i $ROOT_PATH/openvswitch-switch_$OVS_VERSION*.deb $ROOT_PATH/openvswitch-common_$OVS_VERSION*.deb \
     $ROOT_PATH/openvswitch-pki_$OVS_VERSION*.deb
-    fi
 
 }
 
-function opennet {
+function patches {
 
     echo "Install Mininet-Patch"
     cd $ROOT_PATH
-	git clone https://github.com/Barthurmun/NS3-Mininet.git 
+	if [ ! -d NS3-Mininet ]; then
+		git clone https://github.com/Barthurmun/NS3-Mininet.git 
+	fi
 	cp NS3-Mininet/qos-tag.* $ROOT_PATH/ns-allinone-$NS3_VERSION/ns-$NS3_VERSION/src/wifi/model/
     echo "Copy files to Mininet directory"
     cp -r $ROOT_PATH/NS3-Mininet/mininet-patch/examples/* $ROOT_PATH/mininet/examples/
@@ -173,46 +174,50 @@ function waf {
 
 function all {
 
+	enviroment
     pygccxml
     gccxml
     ns3
     netanim
-    mininet-normal
+    mininet-opennet #Change "mininet-opennet" for "mininet-normal" if you want to install OpenNet
     openvswitch
-    opennet
+    patches
     waf
 
 }
 
-function usage {
+function description {
 
-    echo
-    echo Usage: $(basename $0) -[$PARA] >&2
-    echo "-a: Install OpenNet World"
-    echo "-f: Finish message"
-    echo
-    exit 2
-
+	echo "You need to add an argument to succesfully run this script !"
+	echo "Possible options:"
+	echo "  
+		a)  all;;
+        p)  pygccxml;;
+        g)  gccxml;;
+        n)  ns3;;
+        i)  netanim;;
+        m)  mininet-opennet ;;
+        s)  openvswitch;;
+        o)  opennet;;
+        w)  waf;;  "
 }
-
 
 PARA='amdhenipgoswf'
 if [ $# -eq 0 ]
 then
-    usage
+    description
 else
     while getopts $PARA OPTION
     do
         case $OPTION in
         a)  all;;
-        h)  usage;;
         p)  pygccxml;;
         g)  gccxml;;
         n)  ns3;;
         i)  netanim;;
-        m)  mininet;;
+        m)  mininet-opennet;;
         s)  openvswitch;;
-        o)  opennet;;
+        o)  patches;;
         w)  waf;;
         esac
     done
