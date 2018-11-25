@@ -642,9 +642,10 @@ class WIFISegment( object ):
         self.phyhelper = ns.wifi.YansWifiPhyHelper.Default()
         self.wifihelper = ns.wifi.WifiHelper()
         self.machelper = ns.wifi.NqosWifiMacHelper.Default()
-        # Setting channel to phyhelper.
+	#setting channel:
         self.channel = self.channelhelper.Create()
-        self.phyhelper.SetChannel( self.channel )
+        self.phyhelper.SetChannel(self.channel)
+
 
     def add( self, node, port=None, intfName=None, mode=None ):
         """Connect Mininet node to the segment.
@@ -690,7 +691,7 @@ class WIFISegment( object ):
         self.machelper.SetType ("ns3::AdhocWifiMac")
         return self.add( node, port, intfName, mode )
 
-    def addAp( self, node, port=None, intfName=None, mode=None, ssid="default-ssid" ):
+    def addAp( self, node, port=None, intfName=None, mode=None,ext=None,ca=False, ssid="default-ssid" ):
         """Connect Mininet node to the segment.
            Will create WifiNetDevice with ApWifiMac (access point).
            Devices in that mode supports SendFrom() (can be used on switches).
@@ -699,12 +700,29 @@ class WIFISegment( object ):
            intfName: node tap interface name (optional)
            mode: TapBridge mode (UseLocal or UseBridge) (optional)
            ssid: network SSID (optional)"""
-        self.machelper.SetType ("ns3::ApWifiMac", "Ssid", ns.wifi.SsidValue (ns.wifi.Ssid(ssid)),
-                                "BeaconGeneration", ns.core.BooleanValue(True),
-                                "BeaconInterval", ns.core.TimeValue(ns.core.Seconds(2.5)))
+        if ext == "n":
+            amsduVOBE=7935
+            amsduVIBK=7935
+        elif ext == "ac":
+            amsduVOBE=11406
+            amsduVIBK=11406
+
+        if ca == True:
+            self.machelper.SetType ("ns3::ApWifiMac", "Ssid", ns.wifi.SsidValue (ns.wifi.Ssid (ssid)),"BE_MaxAmsduSize", ns.core.UintegerValue (amsduVOBE),
+                                    "BK_MaxAmsduSize", ns.core.UintegerValue (amsduVIBK),"VI_MaxAmsduSize", ns.core.UintegerValue (amsduVIBK),
+                                    "VO_MaxAmsduSize", ns.core.UintegerValue (amsduVOBE),"BE_MaxAmpduSize", ns.core.UintegerValue (0),
+                                    "BK_MaxAmpduSize", ns.core.UintegerValue (0),"VI_MaxAmpduSize", ns.core.UintegerValue (0),"VO_MaxAmpduSize", ns.core.UintegerValue (0))
+        elif ca == "Null":        
+            self.machelper.SetType ("ns3::ApWifiMac", "Ssid", ns.wifi.SsidValue (ns.wifi.Ssid (ssid)), "BE_MaxAmsduSize", ns.core.UintegerValue (0),
+                                    "BK_MaxAmsduSize", ns.core.UintegerValue (0),"VI_MaxAmsduSize", ns.core.UintegerValue (0),
+                                    "VO_MaxAmsduSize", ns.core.UintegerValue (0),"BE_MaxAmpduSize", ns.core.UintegerValue (0),
+                                    "BK_MaxAmpduSize", ns.core.UintegerValue (0),"VI_MaxAmpduSize", ns.core.UintegerValue (0),"VO_MaxAmpduSize", ns.core.UintegerValue (0))
+        else:
+            self.machelper.SetType ("ns3::ApWifiMac", "Ssid", ns.wifi.SsidValue (ns.wifi.Ssid (ssid)))
+        
         return self.add( node, port, intfName, mode )
 
-    def addSta( self, node, port=None, intfName=None, mode=None, ssid="default-ssid" ):
+    def addSta( self, node, port=None, intfName=None, mode=None,ext=None, ca=False, ssid="default-ssid" ):
         """Connect Mininet node to the segment.
            Will create WifiNetDevice with StaWifiMac (client station).
            Devices in that mode does not support SendFrom().
@@ -713,7 +731,26 @@ class WIFISegment( object ):
            intfName: node tap interface name (optional)
            mode: TapBridge mode (UseLocal or UseBridge) (optional)
            ssid: network SSID (optional)"""
-        self.machelper.SetType ("ns3::StaWifiMac", "Ssid", ns.wifi.SsidValue (ns.wifi.Ssid(ssid)))
+        if ext == "n":
+            amsduVOBE=7935 #Maximum value supported by 802.11n
+            amsduVIBK=7935
+        elif ext == "ac":
+            amsduVOBE=11406 #Maximum value supported by 802.11ac
+            amsduVIBK=11406
+
+        if ca == True:
+            self.machelper.SetType ("ns3::StaWifiMac", "Ssid", ns.wifi.SsidValue (ns.wifi.Ssid (ssid)), "BE_MaxAmsduSize", ns.core.UintegerValue (amsduVOBE),
+                                    "BK_MaxAmsduSize", ns.core.UintegerValue (amsduVIBK),"VI_MaxAmsduSize", ns.core.UintegerValue (amsduVIBK),
+                                    "VO_MaxAmsduSize", ns.core.UintegerValue (amsduVOBE),"BE_MaxAmpduSize", ns.core.UintegerValue (0),
+                                    "BK_MaxAmpduSize", ns.core.UintegerValue (0),"VI_MaxAmpduSize", ns.core.UintegerValue (0),"VO_MaxAmpduSize", ns.core.UintegerValue (0))
+        elif ca == "Null":	
+            self.machelper.SetType ("ns3::StaWifiMac", "Ssid", ns.wifi.SsidValue (ns.wifi.Ssid (ssid)), "ActiveProbing", ns.core.BooleanValue (False),"BE_MaxAmsduSize", ns.core.UintegerValue (0),
+                                    "BK_MaxAmsduSize", ns.core.UintegerValue (0),"VI_MaxAmsduSize", ns.core.UintegerValue (0),
+                                    "VO_MaxAmsduSize", ns.core.UintegerValue (0),"BE_MaxAmpduSize", ns.core.UintegerValue (0),
+                                    "BK_MaxAmpduSize", ns.core.UintegerValue (0),"VI_MaxAmpduSize", ns.core.UintegerValue (0),"VO_MaxAmpduSize", ns.core.UintegerValue (0))
+        else:	
+            self.machelper.SetType ("ns3::StaWifiMac", "Ssid", ns.wifi.SsidValue (ns.wifi.Ssid (ssid)), "ActiveProbing", ns.core.BooleanValue (False))
+        
         return self.add( node, port, intfName, mode )
 
 
@@ -738,12 +775,17 @@ class WIFIApStaLink( WIFISegment, Link ):
 
 class WifiSegment( object ):
     def __init__( self, channelHelper = ns.wifi.YansWifiChannelHelper.Default(),
-                        maxChannelNumber = 11, standard = ns.wifi.WIFI_PHY_STANDARD_80211a,
-                        stationManager = "ns3::ArfWifiManager", **attrs):
-        self.wifiHelper = ns.wifi.WifiHelper.Default ()
-        setAttributes (self.wifiHelper.SetRemoteStationManager, stationManager, attrs)
-        self.wifiHelper.SetStandard (standard)
-        self.channel = channelHelper.Create ()
+                        maxChannelNumber = 196, standard = ns.wifi.WIFI_PHY_STANDARD_80211ac,
+                        vht=True, mcs=7, stationManager = "ns3::ConstantRateWifiManager", **attrs):
+	
+        self.wifiHelper = ns.wifi.WifiHelper ()
+	if vht:
+		self.DataRate = ns.wifi.VhtWifiMacHelper.DataRateForMcs (mcs)
+        	self.wifiHelper.SetRemoteStationManager (stationManager, "DataMode", self.DataRate, "ControlMode", self.DataRate)
+        else:
+		self.wifiHelper.SetRemoteStationManager (stationManager, attrs)
+	self.wifiHelper.SetStandard (standard)
+	self.channel = channelHelper.Create ()
         self.maxChannelNumber = maxChannelNumber
         self.baseSsid = 'ssid'
         self.aps = []
@@ -757,7 +799,40 @@ class WifiSegment( object ):
         del self.aps[:]
         del self.stas[:]
 
-    def add( self, node, phyHelper, macHelper, port=None, intfName=None ):
+    def add( self, node, port=None, intfName=None, mode=None ):
+        """Connect Mininet node to the segment.
+           Will create WifiNetDevice with Mac type specified in
+           the MacHelper (default: AdhocWifiMac).
+           node: Mininet node
+           port: node port number (optional)
+           intfName: node tap interface name (optional)
+           mode: TapBridge mode (UseLocal or UseBridge) (optional)"""
+        # Check if this Mininet node has assigned an underlying ns-3 node.
+        if hasattr( node, 'nsNode' ) and node.nsNode is not None:
+            # If it is assigned, go ahead.
+            pass
+        else:
+            # If not, create new ns-3 node and assign it to this Mininet node.
+            node.nsNode = ns.network.Node()
+            allNodes.append( node )
+        # Install new device to the ns-3 node, using provided helpers.
+        device = self.wifihelper.Install( self.phyhelper, self.machelper, node.nsNode ).Get( 0 )
+        mobilityhelper = ns.mobility.MobilityHelper()
+        # Install mobility object to the ns-3 node.
+        mobilityhelper.Install( node.nsNode )
+        # If port number is not specified...
+        if port is None:
+            # ...obtain it automatically.
+            port = node.newPort()
+        # If interface name is not specified...
+        if intfName is None:
+            # ...obtain it automatically.
+            intfName = node.name + '-eth' + repr( port )
+        # In the specified Mininet node, create TBIntf bridged with the 'device'.
+        tb = TBIntf( intfName, node, port, node.nsNode, device, mode )
+        return tb
+
+    def add( self, node, macHelper, phyHelper, port=None, intfName=None ):
         if phyHelper is None or macHelper is None:
             warn( "phyHelper and macHelper must not be none.\n" )
             return None
@@ -766,7 +841,7 @@ class WifiSegment( object ):
         else:
             node.nsNode = ns.network.Node()
             allNodes.append( node )
-        phyHelper.SetChannel (channel = self.channel)
+        #phyHelper.SetChannel (self.channel)
         device = self.wifiHelper.Install (phyHelper, macHelper, node.nsNode).Get(0)
         device.SetAddress (ns.network.Mac48Address.Allocate ())
         if port is None:
@@ -776,25 +851,27 @@ class WifiSegment( object ):
         tb = TBIntf( intfName, node, port, node.nsNode, device)
         return tb
 
-    def addAp( self, node, channelNumber, ssid=None, enableQos=False, port=None, intfName=None, **attrs):
+    def addAp( self, node, ssid="ns3-80211ac", enableQos=True, channelNumber = 36, port=None, intfName=None, **attrs):
         if ssid is None:
             ssid = self.baseSsid + str(len (self.aps) + 1)
         if channelNumber <= 0 or channelNumber > self.maxChannelNumber:
             channelNumber = random.randint (1, self.maxChannelNumber)
             warn("illegal channel number, choose a random channel number %s.\n", channelNumber)
         phyHelper = ns.wifi.YansWifiPhyHelper().Default()
-        phyHelper.Set ("ChannelNumber", ns.core.UintegerValue(channelNumber))
+        phyHelper.SetChannel (self.channel)
+	phyHelper.Set ("ShortGuardEnabled", ns.core.BooleanValue(1))
         if enableQos:
-            macHelper = ns.wifi.QosWifiMacHelper.Default()
+            macHelper = ns.wifi.VhtWifiMacHelper.Default()
         else:
-            macHelper = ns.wifi.NqosWifiMacHelper.Default()
-
-        setAttributes (macHelper.SetType, "ns3::ApWifiMac", attrs)
-        tb = self.add (node, phyHelper, macHelper, port, intfName)
+            macHelper = ns.wifi.WifiMacHelper.Default()
+	
         if type( ssid ) is str:
             wifissid = ns.wifi.Ssid (ssid)
         else:
             wifissid = ssid
+        macHelper.SetType ("ns3::ApWifiMac", "Ssid", ns.wifi.SsidValue(wifissid))
+        tb = self.add (node, phyHelper, macHelper, port, intfName)
+	
         try:
             tb.nsDevice.GetMac ().SetAttribute ("Ssid", ns.wifi.SsidValue (wifissid))
         except:
@@ -804,24 +881,34 @@ class WifiSegment( object ):
         self.aps.append(tb)
         return tb
 
-    def addSta( self, node, channelNumber, ssid=None, enableQos=False, enableScan = True, port=None, intfName=None, **attrs):
+    def addSta( self, node, channelNumber=36, ssid="ns3-80211ac", enableQos=True, enableScan = True, port=None, intfName=None, **attrs):
         if ssid is None:
             ssid = ""
         if channelNumber <= 0 or channelNumber > self.maxChannelNumber:
             channelNumber = random.randint (1, self.maxChannelNumber)
             warn("illegal channel number, choose a random channel number %s.\n", channelNumber)
+
         phyHelper = ns.wifi.YansWifiPhyHelper().Default()
-        phyHelper.Set ("ChannelNumber", ns.core.UintegerValue(channelNumber))
+        phyHelper.SetChannel (self.channel)
+	phyHelper.Set ("ShortGuardEnabled", ns.core.BooleanValue(1))
         if enableQos:
-            macHelper = ns.wifi.QosWifiMacHelper.Default()
+            macHelper = ns.wifi.VhtWifiMacHelper.Default()
         else:
-            macHelper = ns.wifi.NqosWifiMacHelper.Default()
-        setAttributes (macHelper.SetType, "ns3::StaWifiMac", attrs)
-        tb = self.add (node, phyHelper, macHelper, port, intfName)
+            macHelper = ns.wifi.WifiMacHelper.Default()
+	
         if type( ssid ) is str:
             wifissid = ns.wifi.Ssid (ssid)
         else:
             wifissid = ssid
+        phyHelper.Set ("ChannelNumber", ns.core.UintegerValue(channelNumber))
+        macHelper.SetType ("ns3::StaWifiMac", "Ssid", ns.wifi.SsidValue(wifissid), "ActiveProbing", ns.core.BooleanValue(False))
+        device = self.wifiHelper.Install (phyHelper, macHelper, node).Get(0)
+        device.SetAddress (ns.network.Mac48Address.Allocate ())
+        if port is None:
+            port = node.newPort()
+        if intfName is None:
+            intfName = node.name + '-eth' + repr( port )
+        tb = TBIntf( intfName, node, port, node.nsNode, device)
         try:
             tb.nsDevice.GetMac ().SetAttribute ("Ssid", ns.wifi.SsidValue (wifissid))
         except:
@@ -941,4 +1028,3 @@ class WIFIBridgeLink( WIFISegment, Link ):
         tb1.link = self
         tb2.link = self
         self.intf1, self.intf2 = tb1, tb2
-

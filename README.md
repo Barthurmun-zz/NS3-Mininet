@@ -5,15 +5,18 @@ Copy install.sh into folder where you want all your files to be stored in.
 
 B4 using it change user to root (sudo su - / su)
 
-tested on Debian 8 & NS3.27
+Tested on Debian 8 & NS3.27
 
-#BASED ON FILES CREATED BY: 
+If you are using Unix system with kernel newer than 4.4 you should additionaly apply fix provided by Piotr Jurkiewicz, this fix is available under NS3-Patch folder.
 
-#https://git.fslab.de/mmklab/SDN-SIMULATOR-SDWMN/tree/40040b93945571d8ceb2cbe554d9a4c3c9ed62ed
 
-#https://github.com/dlinknctu/mininet
+BASED ON: 
 
-#https://github.com/mininet/mininet/wiki/Link-modeling-using-ns-3
+https://git.fslab.de/mmklab/SDN-SIMULATOR-SDWMN/tree/40040b93945571d8ceb2cbe554d9a4c3c9ed62ed
 
-#OpenNet
+https://github.com/dlinknctu/mininet
+
+https://github.com/mininet/mininet/wiki/Link-modeling-using-ns-3
+
+OpenNet
 
