@@ -19,12 +19,8 @@ ROOT_PATH=`pwd`
 OVS_VERSION='2.4.0'
 MININET_VERSION='2.2.1'
 NS3_VERSION='3.27'
-PYGCCXML_VERSION='1.0.0' #Mozliwa potrzeba zainstalowania nowszej wersji ! 
+PYGCCXML_VERSION='1.0.0' #Newer version could be needed! 
 NETANIM_VERSION='3.108'
-DIST=Unknown
-RELEASE=Unknown
-CODENAME=Unknown
-KERNEL=1 #Jesli masz wersje jądra niższa niz 4.4 to zmien na 0
 
 
 function enviroment {
