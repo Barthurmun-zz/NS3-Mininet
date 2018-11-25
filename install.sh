@@ -24,7 +24,7 @@ NETANIM_VERSION='3.108'
 DIST=Unknown
 RELEASE=Unknown
 CODENAME=Unknown
-
+KERNEL=1 #Jesli masz wersje jądra niższa niz 4.4 to zmien na 0
 
 
 function enviroment {
@@ -155,6 +155,9 @@ function patches {
     cp $ROOT_PATH/NS3-Mininet/NS3-Patch/*.diff $ROOT_PATH/ns-allinone-$NS3_VERSION/ns-$NS3_VERSION
     cd $ROOT_PATH/ns-allinone-$NS3_VERSION/ns-$NS3_VERSION/
 	git apply ns-3-patch-wifi-wds-v322.diff 
+	if [ `echo $KERNEL` == 1 ]; then	
+		git apply Kernel_440_above_patch.diff
+	fi	
     sed -e "s/\['network'\]/\['internet', 'network', 'core'\]/" -i src/tap-bridge/wscript
     
 	cd $ROOT_PATH/ns-allinone-$NS3_VERSION/ns-$NS3_VERSION/
@@ -179,7 +182,7 @@ function all {
     gccxml
     ns3
     netanim
-    mininet-opennet #Change "mininet-opennet" for "mininet-normal" if you want to install OpenNet
+    mininet-opennet #Change "mininet-opennet" for "mininet-normal" if you do not want to install OpenNet
     openvswitch
     patches
     waf
