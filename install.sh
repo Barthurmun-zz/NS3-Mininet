@@ -1,13 +1,14 @@
 #!/bin/bash
 #==============================================================================
+# Jakub Bryl
 #title           : install.sh
-#RUN THIS SCRIPT WHILE BEING IN ROOT MODE (SU / SUDO SU - ) !!!!!!!!!!!!!!!!!!!
-#DONE FOR DEBIAN 8 & NS3.27 
+#Run this script with root privilages 
+#Tested on Debian 8 & NS3.27 
 #BASED ON FILES CREATED BY: 
 #https://git.fslab.de/mmklab/SDN-SIMULATOR-SDWMN/tree/40040b93945571d8ceb2cbe554d9a4c3c9ed62ed
 #https://github.com/dlinknctu/mininet
 #https://github.com/mininet/mininet/wiki/Link-modeling-using-ns-3
-#OpenNet
+#OpenNet project
 #==============================================================================
 
 
