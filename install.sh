@@ -19,7 +19,7 @@ set -e
 ROOT_PATH=`pwd`
 OVS_VERSION='2.4.0'
 MININET_VERSION='2.2.1'
-NS3_VERSION='3.27'
+NS3_VERSION='3.29'
 PYGCCXML_VERSION='1.0.0' #Newer version could be needed! 
 NETANIM_VERSION='3.108'
 
@@ -139,7 +139,7 @@ function patches {
 	if [ ! -d NS3-Mininet ]; then
 		git clone https://github.com/Barthurmun/NS3-Mininet.git 
 	fi
-	cp NS3-Mininet/qos-tag.* $ROOT_PATH/ns-allinone-$NS3_VERSION/ns-$NS3_VERSION/src/wifi/model/
+	cp NS3-Mininet/NS3.29_Modified_Files/* $ROOT_PATH/ns-allinone-$NS3_VERSION/ns-$NS3_VERSION/src/wifi/model/
     echo "Copy files to Mininet directory"
     cp -r $ROOT_PATH/NS3-Mininet/mininet-patch/examples/* $ROOT_PATH/mininet/examples/
     cp -r $ROOT_PATH/NS3-Mininet/mininet-patch/mininet/* $ROOT_PATH/mininet/mininet/
