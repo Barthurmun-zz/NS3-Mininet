@@ -3,7 +3,7 @@
 # Jakub Bryl
 #title           : install.sh
 #Run this script with root privilages 
-#Tested on Debian 8 & NS3.27 
+#Tested on Debian 8 & NS3.29. 
 #BASED ON FILES CREATED BY: 
 #https://git.fslab.de/mmklab/SDN-SIMULATOR-SDWMN/tree/40040b93945571d8ceb2cbe554d9a4c3c9ed62ed
 #https://github.com/dlinknctu/mininet
@@ -151,13 +151,9 @@ function patches {
     echo "Patch NS3"
     cp $ROOT_PATH/NS3-Mininet/NS3-Patch/*.diff $ROOT_PATH/ns-allinone-$NS3_VERSION/ns-$NS3_VERSION
     cd $ROOT_PATH/ns-allinone-$NS3_VERSION/ns-$NS3_VERSION/
-	git apply ns-3-patch-wifi-wds-v322.diff 
-	if [ `echo $KERNEL` == 1 ]; then	
-		git apply Kernel_440_above_patch.diff
-	fi	
+    git apply ns-3-patch-wifi-wds-v322.diff 	
     sed -e "s/\['network'\]/\['internet', 'network', 'core'\]/" -i src/tap-bridge/wscript
-    
-	cd $ROOT_PATH/ns-allinone-$NS3_VERSION/ns-$NS3_VERSION/
+    cd $ROOT_PATH/ns-allinone-$NS3_VERSION/ns-$NS3_VERSION/
     ./waf
 }
 
@@ -174,7 +170,7 @@ function waf {
 
 function all {
 
-	enviroment
+    enviroment
     pygccxml
     gccxml
     ns3
