@@ -148,13 +148,16 @@ function patches {
     cd $ROOT_PATH/mininet/
     ./util/install.sh -n
 
-    echo "Patch NS3"
-    cp $ROOT_PATH/NS3-Mininet/NS3-Patch/*.diff $ROOT_PATH/ns-allinone-$NS3_VERSION/ns-$NS3_VERSION
-    cd $ROOT_PATH/ns-allinone-$NS3_VERSION/ns-$NS3_VERSION/
-    git apply ns-3-patch-wifi-wds-v322.diff 	
-    sed -e "s/\['network'\]/\['internet', 'network', 'core'\]/" -i src/tap-bridge/wscript
-    cd $ROOT_PATH/ns-allinone-$NS3_VERSION/ns-$NS3_VERSION/
-    ./waf
+    ##Patching in ns3.29 version should be done manually as there had to be done line adjustmensts
+    ##If you are using ns3.27, you can uncomment beneath presented section
+    
+    #echo "Patch NS3"
+    #cp $ROOT_PATH/NS3-Mininet/NS3-Patch/*.diff $ROOT_PATH/ns-allinone-$NS3_VERSION/ns-$NS3_VERSION
+    #cd $ROOT_PATH/ns-allinone-$NS3_VERSION/ns-$NS3_VERSION/
+    #git apply ns-3-patch-wifi-wds-v322.diff 	
+    #sed -e "s/\['network'\]/\['internet', 'network', 'core'\]/" -i src/tap-bridge/wscript
+    #cd $ROOT_PATH/ns-allinone-$NS3_VERSION/ns-$NS3_VERSION/
+    #./waf
 }
 
 
@@ -175,7 +178,7 @@ function all {
     gccxml
     ns3
     netanim
-    mininet-opennet #Change "mininet-opennet" for "mininet-normal" if you do not want to install OpenNet
+    mininet-normal #Change "mininet-normal" for "mininet-opennet" if you want to install OpenNet
     openvswitch
     patches
     waf
@@ -198,7 +201,7 @@ function description {
         w)  waf;;  "
 }
 
-PARA='amdhenipgoswf'
+PARA='apgnimsowec'
 if [ $# -eq 0 ]
 then
     description
